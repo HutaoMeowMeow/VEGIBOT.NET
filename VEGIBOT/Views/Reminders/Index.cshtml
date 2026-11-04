@@ -1,0 +1,100 @@
+@model VEGIBOT.Models.ReminderListViewModel
+@using VEGIBOT.Models
+
+@{
+    ViewData["Title"] = "Reminders";
+    Layout = "_DashboardLayout";
+    var filters = new[] { ("all", "All"), ("enabled", "Enabled"), ("disabled", "Disabled"), ("completed", "Completed") };
+}
+
+<div class="page-header">
+    <div>
+        <h2>Your reminders</h2>
+        <p>@Model.Reminders.Count reminder@(Model.Reminders.Count == 1 ? "" : "s") shown</p>
+    </div>
+    <a class="btn btn-primary" asp-controller="Reminders" asp-action="Create">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Reminder
+    </a>
+</div>
+
+<div class="toolbar">
+    <div class="filter-pills" style="margin-bottom:0;">
+        @foreach (var (key, label) in filters)
+        {
+            <a class="filter-pill @(Model.Filter == key ? "active" : "")"
+               asp-controller="Reminders" asp-action="Index"
+               asp-route-filter="@key" asp-route-search="@Model.Search">@label</a>
+        }
+    </div>
+
+    <form method="get" asp-controller="Reminders" asp-action="Index" class="search-box" style="max-width: 320px; margin-left:auto;">
+        <input type="hidden" name="filter" value="@Model.Filter" />
+        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" name="search" value="@Model.Search" placeholder="Search reminders…" aria-label="Search reminders" />
+    </form>
+</div>
+
+<div class="card">
+    @if (Model.Reminders.Count == 0)
+    {
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <h3>No reminders found</h3>
+            <p class="sub-text">Set a reminder so watering and feeding never slip your mind.</p>
+            <div style="margin-top: var(--spacing-md);">
+                <a class="btn btn-primary" asp-controller="Reminders" asp-action="Create">Add a reminder</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Reminder</th>
+                        <th>Plant</th>
+                        <th>When</th>
+                        <th>Repeats</th>
+                        <th>Status</th>
+                        <th style="text-align:right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model.Reminders)
+                    {
+                        var isSnoozed = !r.IsEnabled && !r.IsCompleted;
+                        <tr>
+                            <td>
+                                <div style="font-weight:600;">@r.Title</div>
+                                <div style="font-size:12px;color:var(--vg-muted);">@r.ReminderType</div>
+                            </td>
+                            <td>@(r.Plant?.Name ?? "—")</td>
+                            <td>@r.ReminderDate.ToString("dd MMM yyyy") · @r.ReminderTime.ToString(@"hh\:mm")</td>
+                            <td>@r.Recurrence.DisplayName()</td>
+                            <td>
+                                <span class="status-badge @(r.IsCompleted ? "status-badge-completed" : isSnoozed ? "status-badge-snoozed" : "status-badge-active")">
+                                    @(r.IsCompleted ? "Completed" : isSnoozed ? "Snoozed" : "Active")
+                                </span>
+                            </td>
+                            <td>
+                                <div class="actions-cell" style="justify-content:flex-end;">
+                                    <form asp-controller="Reminders" asp-action="Toggle" asp-route-id="@r.Id" method="post" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-small">@(r.IsEnabled ? "Disable" : "Enable")</button>
+                                    </form>
+                                    <a class="btn-small" asp-controller="Reminders" asp-action="Edit" asp-route-id="@r.Id">Edit</a>
+                                    <form asp-controller="Reminders" asp-action="Delete" asp-route-id="@r.Id" method="post" onsubmit="return confirm('Delete this reminder?');" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-small btn-small-delete">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

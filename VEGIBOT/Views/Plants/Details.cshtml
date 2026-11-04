@@ -1,0 +1,115 @@
+@model VEGIBOT.Models.Plant
+@using VEGIBOT.Models
+
+@{
+    ViewData["Title"] = Model.Name;
+    Layout = "_DashboardLayout";
+}
+
+<div class="page-header">
+    <div style="display:flex;align-items:center;gap:14px;">
+        <span style="font-size:34px;" aria-hidden="true">@(string.IsNullOrWhiteSpace(Model.IconEmoji) ? "🌱" : Model.IconEmoji)</span>
+        <div>
+            <h2 style="margin:0;">@Model.Name</h2>
+            <p>@(string.IsNullOrWhiteSpace(Model.VegetableType) ? "Plant" : Model.VegetableType)@(string.IsNullOrWhiteSpace(Model.Variety) ? "" : $" · {Model.Variety}")</p>
+        </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <a class="btn btn-secondary" asp-controller="Plants" asp-action="Index">Back</a>
+        <a class="btn btn-primary" asp-controller="Plants" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+    </div>
+</div>
+
+<div class="row" style="align-items:flex-start;">
+    <div class="col" style="flex: 1 1 380px;">
+        <div class="card">
+            <div class="card-header"><h4>Overview</h4></div>
+            <div class="card-body">
+                <dl style="display:grid;grid-template-columns:140px 1fr;gap:10px 16px;margin:0;font-size:13.5px;">
+                    <dt class="text-muted">Health</dt><dd style="margin:0;"><span class="health-badge @Model.Health.HealthCssClass()">@Model.Health.DisplayName()</span></dd>
+                    <dt class="text-muted">Growth stage</dt><dd style="margin:0;">@Model.Stage.DisplayName()</dd>
+                    <dt class="text-muted">Planted</dt><dd style="margin:0;">@Model.PlantedDate.ToString("dd MMM yyyy")</dd>
+                    <dt class="text-muted">Expected harvest</dt><dd style="margin:0;">@(Model.ExpectedHarvestDate.HasValue ? Model.ExpectedHarvestDate.Value.ToString("dd MMM yyyy") : "Not set")</dd>
+                    <dt class="text-muted">Watering</dt><dd style="margin:0;">@(string.IsNullOrWhiteSpace(Model.WateringFrequency) ? "Not set" : Model.WateringFrequency)</dd>
+                    <dt class="text-muted">Sunlight</dt><dd style="margin:0;">@(string.IsNullOrWhiteSpace(Model.SunlightRequirements) ? "Not set" : Model.SunlightRequirements)</dd>
+                    <dt class="text-muted">Soil</dt><dd style="margin:0;">@(string.IsNullOrWhiteSpace(Model.SoilType) ? "Not set" : Model.SoilType)</dd>
+                    <dt class="text-muted">Notes</dt><dd style="margin:0;">@(string.IsNullOrWhiteSpace(Model.Notes) ? "No notes yet." : Model.Notes)</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col" style="flex: 1 1 320px;">
+        <div class="card">
+            <div class="card-header">
+                <h4>Tasks</h4>
+                <a class="btn-small" asp-controller="Tasks" asp-action="Create" asp-route-plantId="@Model.Id">Add task</a>
+            </div>
+            <div class="card-body" style="padding:0;">
+                @if (Model.Tasks.Count == 0)
+                {
+                    <p class="text-muted" style="padding: var(--spacing-md); margin:0; font-size:13px;">No tasks for this plant.</p>
+                }
+                else
+                {
+                    <ul style="list-style:none;margin:0;padding:var(--spacing-md);display:flex;flex-direction:column;gap:10px;font-size:13px;">
+                        @foreach (var t in Model.Tasks.OrderBy(t => t.DueDate).Take(5))
+                        {
+                            <li style="display:flex;justify-content:space-between;gap:10px;">
+                                <span>@t.Title</span>
+                                <span class="text-muted">@t.DueDate.ToString("dd MMM")</span>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h4>Reminders</h4>
+                <a class="btn-small" asp-controller="Reminders" asp-action="Create" asp-route-plantId="@Model.Id">Add reminder</a>
+            </div>
+            <div class="card-body" style="padding:0;">
+                @if (Model.Reminders.Count == 0)
+                {
+                    <p class="text-muted" style="padding: var(--spacing-md); margin:0; font-size:13px;">No reminders for this plant.</p>
+                }
+                else
+                {
+                    <ul style="list-style:none;margin:0;padding:var(--spacing-md);display:flex;flex-direction:column;gap:10px;font-size:13px;">
+                        @foreach (var r in Model.Reminders.OrderBy(r => r.ReminderDate).Take(5))
+                        {
+                            <li style="display:flex;justify-content:space-between;gap:10px;">
+                                <span>@r.Title</span>
+                                <span class="text-muted">@r.ReminderDate.ToString("dd MMM") · @r.ReminderTime.ToString(@"hh\:mm")</span>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header"><h4>Recent activity</h4></div>
+            <div class="card-body" style="padding:0;">
+                @if (Model.History.Count == 0)
+                {
+                    <p class="text-muted" style="padding: var(--spacing-md); margin:0; font-size:13px;">No activity recorded yet.</p>
+                }
+                else
+                {
+                    <ul style="list-style:none;margin:0;padding:var(--spacing-md);display:flex;flex-direction:column;gap:10px;font-size:13px;">
+                        @foreach (var h in Model.History.Take(6))
+                        {
+                            <li style="display:flex;justify-content:space-between;gap:10px;">
+                                <span>@h.Description</span>
+                                <span class="text-muted">@h.OccurredAt.ToString("dd MMM")</span>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+</div>

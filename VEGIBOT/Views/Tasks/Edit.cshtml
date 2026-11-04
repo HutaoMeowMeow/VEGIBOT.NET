@@ -1,0 +1,77 @@
+@model VEGIBOT.Models.TaskFormViewModel
+
+@{
+    ViewData["Title"] = "Edit Task";
+    Layout = "_DashboardLayout";
+}
+
+<div class="dashboard-section" style="background: white; border-radius: 8px; padding: var(--spacing-lg); box-shadow: var(--vg-box-shadow-light); margin-bottom: var(--spacing-xl);">
+
+    <div class="section-header" style="margin-bottom: var(--spacing-lg);">
+        <h2>Edit Task</h2>
+        <a asp-action="Index" class="back-link" style="color: var(--vg-forest-green); text-decoration: none; font-size: 14px;">← Back to Tasks</a>
+    </div>
+
+    <form asp-action="Edit" method="post" style="max-width: 500px; margin: 0 auto;">
+
+        <input type="hidden" asp-for="Id" />
+
+        <div class="form-group" style="margin-bottom: var(--spacing-sm);">
+            <label asp-for="Title" class="form-label">Task Title</label>
+            <input asp-for="Title" class="form-input" required />
+        </div>
+
+        <div class="form-group" style="margin-bottom: var(--spacing-sm);">
+            <label asp-for="Description" class="form-label">Description (optional)</label>
+            <textarea asp-for="Description" class="form-input" rows="3"></textarea>
+        </div>
+
+        <div class="form-group" style="margin-bottom: var(--spacing-sm);">
+            <label asp-for="PlantId" class="form-label">Plant</label>
+            <select asp-for="PlantId" class="form-input">
+                <option value="">-- Select a plant --</option>
+                @foreach (var plant in (List<VEGIBOT.Models.Plant>)ViewData["Plants"])
+                {
+                    <option value="@plant.Id" @(plant.Id == Model.PlantId ? "selected" : "")>@plant.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: var(--spacing-sm);">
+            <label asp-for="DueDate" class="form-label">Due Date</label>
+            <input asp-for="DueDate" type="date" class="form-input" />
+        </div>
+
+        <div class="form-group" style="margin-bottom: var(--spacing-sm);">
+            <label asp-for="Priority" class="form-label">Priority</label>
+            <select asp-for="Priority" class="form-input">
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+            </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: var(--spacing-sm);">
+            <label asp-for="Category" class="form-label">Category</label>
+            <input asp-for="Category" class="form-input" />
+        </div>
+
+        <div class="form-group" style="margin-top: var(--spacing-sm); display: flex; justify-content: space-between;">
+            <button type="submit" class="btn-signin" style="flex: 1; padding: 10px 12px; background: var(--vg-forest-green); color: #eee; border: none; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; margin-right: 10px;">Update Task</button>
+            <a asp-action="Index" class="back-link" style="flex: 1; padding: 10px 12px; color: var(--vg-forest-green); text-decoration: none; font-size: 14px;">Cancel</a>
+        </div>
+
+    </form>
+
+</div>
+
+<style>
+    .form-group { margin-bottom: var(--spacing-sm); }
+    .form-label { display: block; margin-bottom: var(--spacing-xs); font-size: 14px; color: var(--vg-dark-text); }
+    .form-input { width: 100%; padding: 10px 12px; border: 1px solid var(--vg-light-sage); border-radius: 4px; font-size: 14px; box-sizing: border-box; background: #fff; transition: border-color 0.2s; }
+    .form-input:focus { border-color: var(--vg-forest-green); outline: none; }
+    .form-input[rows] { min-height: 60px; }
+    .back-link { color: var(--vg-forest-green); text-decoration: none; font-size: 14px; margin-bottom: var(--spacing-sm); display: inline-block; }
+    .btn-signin { flex: 1; padding: 10px 12px; background: var(--vg-forest-green); color: #eee; border: none; border-radius: 4px; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+    .btn-signin:hover { background: #163F35; }
+</style>

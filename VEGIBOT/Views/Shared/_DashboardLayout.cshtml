@@ -1,0 +1,195 @@
+@{
+    var controller = (ViewContext.RouteData.Values["controller"] as string) ?? "Home";
+    string Active(string name) => string.Equals(controller, name, StringComparison.OrdinalIgnoreCase) ? "nav-link active" : "nav-link";
+
+    var userName = User.Identity?.Name ?? "Gardener";
+    var initial = string.IsNullOrWhiteSpace(userName) ? "G" : userName.Trim()[0].ToString().ToUpperInvariant();
+    var pageTitle = ViewData["Title"] as string ?? "Dashboard";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@pageTitle — VegiBot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<body>
+
+    <!-- Mobile overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="Main navigation">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--vg-forest-green)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 21V9"/>
+                    <path d="M12 12C12 8 9 6 5 6c0 4 3 6 7 6z"/>
+                    <path d="M12 15c0-4 3-6 7-6 0 4-3 6-7 6z"/>
+                </svg>
+            </div>
+            <div>
+                <h1>VegiBot</h1>
+                <span class="text-upper">Smart Garden</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <p class="sidebar-section-label">MAIN</p>
+
+            <a class="@Active("Home")" asp-controller="Home" asp-action="Index">
+                <span class="nav-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+                </span>
+                <span class="nav-label">Dashboard</span>
+            </a>
+
+            <a class="@Active("Plants")" asp-controller="Plants" asp-action="Index">
+                <span class="nav-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V11"/><path d="M12 13C12 9 9 7 6 7c0 4 3 6 6 6z"/><path d="M12 16c0-4 3-6 6-6 0 4-3 6-6 6z"/></svg>
+                </span>
+                <span class="nav-label">My Plants</span>
+            </a>
+
+            <a class="@Active("Tasks")" asp-controller="Tasks" asp-action="Index">
+                <span class="nav-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                </span>
+                <span class="nav-label">Tasks</span>
+            </a>
+
+            <a class="@Active("Reminders")" asp-controller="Reminders" asp-action="Index">
+                <span class="nav-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                </span>
+                <span class="nav-label">Reminders</span>
+            </a>
+
+            <a class="@Active("Calendar")" asp-controller="Calendar" asp-action="Index">
+                <span class="nav-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>
+                </span>
+                <span class="nav-label">Calendar</span>
+            </a>
+
+            <p class="sidebar-section-label">TOOLS</p>
+
+            <a class="@Active("Weather")" asp-controller="Weather" asp-action="Index">
+                <span class="nav-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></svg>
+                </span>
+                <span class="nav-label">Weather</span>
+            </a>
+
+            <a class="@Active("GardenAI")" asp-controller="GardenAI" asp-action="Index">
+                <span class="nav-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.2L18 9l-4.2 1.8L12 15l-1.8-4.2L6 9l4.2-1.8L12 3z"/><path d="M18 15l.9 2.1L21 18l-2.1.9L18 21l-.9-2.1L15 18l2.1-.9L18 15z"/></svg>
+                </span>
+                <span class="nav-label">Garden AI</span>
+            </a>
+
+            <a class="@Active("PlantHistory")" asp-controller="PlantHistory" asp-action="Index">
+                <span class="nav-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><polyline points="3 4 3 9 8 9"/><polyline points="12 7 12 12 15 14"/></svg>
+                </span>
+                <span class="nav-label">Plant History</span>
+            </a>
+
+            <p class="sidebar-section-label">ACCOUNT</p>
+
+            <a class="@Active("Profile")" asp-controller="Profile" asp-action="Index">
+                <span class="nav-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                </span>
+                <span class="nav-label">Profile</span>
+            </a>
+
+            <a class="@Active("Settings")" asp-controller="Settings" asp-action="Index">
+                <span class="nav-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 8.6 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 8.6a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8.9 4.6h.09A1.65 1.65 0 0 0 10.5 3.09V3a2 2 0 1 1 4 0v.09A1.65 1.65 0 0 0 16 4.6a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 8.9v.09A1.65 1.65 0 0 0 20.91 10.5H21a2 2 0 1 1 0 4h-.09A1.65 1.65 0 0 0 19.4 15z"/></svg>
+                </span>
+                <span class="nav-label">Settings</span>
+            </a>
+
+            <form asp-controller="Account" asp-action="Logout" method="post" style="margin-top: 6px;">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="nav-link logout-link" style="width: calc(100% - 24px); border: none; background: transparent; cursor: pointer; font-family: inherit;">
+                    <span class="nav-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    </span>
+                    <span class="nav-label">Logout</span>
+                </button>
+            </form>
+        </nav>
+    </aside>
+
+    <!-- Main -->
+    <div class="main-content">
+        <header class="app-topbar">
+            <div style="display: flex; align-items: center; gap: 12px; min-width: 0;">
+                <button class="nav-toggle" id="navToggle" aria-label="Open navigation" aria-controls="sidebar" aria-expanded="false">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <div class="page-heading">
+                    <h1>@pageTitle</h1>
+                    <div class="breadcrumb">VegiBot / @pageTitle</div>
+                </div>
+            </div>
+
+            <div class="right-actions">
+                <a class="topbar-user" asp-controller="Profile" asp-action="Index" title="Open your profile">
+                    <span class="avatar avatar-sm">@initial</span>
+                    <span>@userName</span>
+                </a>
+            </div>
+        </header>
+
+        <main>
+            @RenderBody()
+        </main>
+    </div>
+
+    <script>
+        (function () {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const toggle = document.getElementById('navToggle');
+
+            function setOpen(open) {
+                if (!sidebar) return;
+                sidebar.classList.toggle('open', open);
+                overlay.classList.toggle('show', open);
+                toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                document.body.style.overflow = open ? 'hidden' : '';
+            }
+
+            if (toggle) {
+                toggle.addEventListener('click', function () {
+                    setOpen(!sidebar.classList.contains('open'));
+                });
+            }
+            if (overlay) overlay.addEventListener('click', function () { setOpen(false); });
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') setOpen(false);
+            });
+
+            // Close the drawer after navigating on small screens.
+            if (sidebar) {
+                sidebar.querySelectorAll('a.nav-link').forEach(function (link) {
+                    link.addEventListener('click', function () {
+                        if (window.innerWidth <= 900) setOpen(false);
+                    });
+                });
+            }
+        })();
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

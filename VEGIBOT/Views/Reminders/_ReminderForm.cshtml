@@ -1,0 +1,74 @@
+@model VEGIBOT.Models.ReminderFormViewModel
+@using VEGIBOT.Models
+
+<input type="hidden" asp-for="Id" />
+<div asp-validation-summary="ModelOnly" class="alert-error"></div>
+
+<div class="form-group">
+    <label asp-for="Title" class="form-label">Reminder title</label>
+    <input asp-for="Title" class="form-input" placeholder="e.g. Water the tomatoes" required />
+    <span asp-validation-for="Title" class="field-error"></span>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="ReminderType" class="form-label">Type</label>
+            <select asp-for="ReminderType" class="form-input" asp-items="Html.GetEnumSelectList<ReminderType>()"></select>
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="PlantId" class="form-label">Plant</label>
+            <select asp-for="PlantId" class="form-input">
+                <option value="">— No plant —</option>
+                @foreach (var plant in (List<Plant>)ViewBag.Plants)
+                {
+                    <option value="@plant.Id">@plant.Name@(string.IsNullOrWhiteSpace(plant.Variety) ? "" : $" — {plant.Variety}")</option>
+                }
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="ReminderDate" class="form-label">Date</label>
+            <input asp-for="ReminderDate" class="form-input" type="date" required />
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="ReminderTime" class="form-label">Time</label>
+            <input asp-for="ReminderTime" class="form-input" placeholder="08:00" />
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="Recurrence" class="form-label">Repeats</label>
+            <select asp-for="Recurrence" class="form-input" asp-items="Html.GetEnumSelectList<RecurrenceType>()"></select>
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="CustomIntervalDays" class="form-label">Custom interval (days)</label>
+            <input asp-for="CustomIntervalDays" class="form-input" type="number" min="1" />
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="checkbox-label">
+        <input asp-for="IsEnabled" class="checkbox-input" type="checkbox" />
+        <span>Reminder is active</span>
+    </label>
+</div>
+
+<div class="form-group">
+    <label asp-for="Notes" class="form-label">Notes</label>
+    <textarea asp-for="Notes" class="form-input" rows="3" placeholder="Optional details…"></textarea>
+</div>

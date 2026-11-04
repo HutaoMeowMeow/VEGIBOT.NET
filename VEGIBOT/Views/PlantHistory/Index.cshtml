@@ -1,0 +1,111 @@
+@model VEGIBOT.Models.HistoryListViewModel
+
+@{
+    ViewData["Title"] = "Plant History";
+    ViewData["PageTitle"] = "Plant Activity History";
+    ViewData["ActiveNav"] = "PlantHistory";
+    Layout = "_DashboardLayout";
+}
+
+<div class="history-page" style="background: var(--vg-warm-cream);">
+
+    <section class="history-filters" style="background: white; padding: var(--spacing-lg); border-radius: 8px; margin-bottom: var(--spacing-lg); box-shadow: var(--vg-box-shadow-light);">
+        <div class="filter-group" style="margin-bottom: var(--spacing-md);">
+            <label class="filter-label" style="display: block; margin-bottom: var(--spacing-sm); color: var(--vg-dark-text); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Filter by activity:</label>
+            <div class="filter-pills" style="display: flex; gap: var(--spacing-xs); flex-wrap: wrap; margin-top: var(--spacing-sm);">
+                <a asp-action="Index" asp-controller="PlantHistory" class="filter-pill active">All</a>
+                <a asp-action="Index" asp-controller="PlantHistory" filter="watered" class="filter-pill">Watered</a>
+                <a asp-action="Index" asp-controller="PlantHistory" filter="fertilized" class="filter-pill">Fertilized</a>
+                <a asp-action="Index" asp-controller="PlantHistory" filter="pruned" class="filter-pill">Pruned</a>
+                <a asp-action="Index" asp-controller="PlantHistory" filter="harvested" class="filter-pill">Harvested</a>
+                <a asp-action="Index" asp-controller="PlantHistory" filter="taskcompleted" class="filter-pill">Task Completed</a>
+                <a asp-action="Index" asp-controller="PlantHistory" filter="plantadded" class="filter-pill">Plant Added</a>
+            </div>
+        </div>
+
+        <div class="filter-group" style="margin-bottom: var(--spacing-md);">
+            <label class="filter-label" style="display: block; margin-bottom: var(--spacing-sm); color: var(--vg-dark-text); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Plant:</label>
+            <select asp-action="Index" asp-controller="PlantHistory" class="filter-select" style="padding: 6px 12px; border: 1px solid var(--vg-light-sage); border-radius: 4px; min-width: 200px; font-size: 12px; background: white;">
+                <option value="">All plants</option>
+                @foreach (var plant in Model.UserPlants)
+                {
+                    <option value="@plant.Name" @(Model.Filter == "plant" && Model.Search == plant.Name ? "selected" : "")>@plant.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="filter-group" style="margin-bottom: var(--spacing-md);">
+            <label class="filter-label" style="display: block; margin-bottom: var(--spacing-sm); color: var(--vg-dark-text); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Date range:</label>
+            <div class="date-range" style="display: flex; align-items: center; gap: var(--spacing-sm); margin-top: var(--spacing-sm);">
+                <input type="date" asp-action="Index" asp-controller="PlantHistory" asp-route-from="@Model.From" class="date-input" style="padding: 6px 10px; border: 1px solid var(--vg-light-sage); border-radius: 4px; font-size: 12px; width: 150px; background: white;" />
+                <span style="color: #8890A5;">to</span>
+                <input type="date" asp-action="Index" asp-controller="PlantHistory" asp-route-to="@Model.To" class="date-input" style="padding: 6px 10px; border: 1px solid var(--vg-light-sage); border-radius: 4px; font-size: 12px; width: 150px; background: white;" />
+            </div>
+        </div>
+
+        <div class="filter-group" style="margin-bottom: var(--spacing-md);">
+            <label class="filter-label" style="display: block; margin-bottom: var(--spacing-sm); color: var(--vg-dark-text); font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Search:</label>
+            <input type="text" asp-action="Index" asp-controller="PlantHistory" asp-route-search="@Model.Search" class="search-input" placeholder="Search descriptions..." style="padding: 8px 12px; border: 1px solid var(--vg-light-sage); border-radius: 4px; font-size: 13px; width: 300px; background: white;" />
+        </div>
+    </section>
+
+    @if (Model.Entries.Count == 0)
+    {
+        <div class="empty-state" style="padding: var(--spacing-xl) var(--spacing-md); color: #6A8A70; text-align: center;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="1" x2="12" y2="23"/>
+                <line x1="a" y1="4" x2="a" y2="20"/>
+                <line x1="12" y1="4" x2="a" y2="20"/>
+                <line x1="a" y1="4" x2="12" y2="4"/>
+            </svg>
+            <span>No activity recorded yet</span>
+            <p>Perform gardening actions to see activity history here.</p>
+        </div>
+    }
+    else
+    {
+        <section class="history-entries" style="margin: var(--spacing-lg) 0;">
+
+            @foreach (var entry in Model.Entries)
+            {
+                var plantName = entry.Plant?.Name ?? "Unknown";
+                var timestamp = entry.OccurredAt.ToString("MMM d, yyyy HH:mm");
+
+                <div class="history-entry" style="padding: var(--spacing-sm) var(--spacing-md); background: white; margin: var(--spacing-sm) 0; border-radius: 8px; border-left: 3px solid var(--vg-light-sage); transition: all 0.2s;">
+                    <div class="history-icon" style="width: 20px; height: 20px; text-align: center; font-size: 14px; margin-right: var(--spacing-sm);">
+                        @entry.ActivityType switch
+                        {
+                            VEGIBOT.Models.HistoryActivityType.Watered => "💧",
+                            VEGIBOT.Models.HistoryActivityType.Fertilized => "🌿",
+                            VEGIBOT.Models.HistoryActivityType.Pruned => "✂️",
+                            VEGIBOT.Models.HistoryActivityType.Harvested => "🍅",
+                            VEGIBOT.Models.HistoryActivityType.TaskCompleted => "✅",
+                            VEGIBOT.Models.HistoryActivityType.PlantAdded => "🌱",
+                            VEGIBOT.Models.HistoryActivityType.HealthChanged => "📊",
+                            VEGIBOT.Models.HistoryActivityType.StageChanged => "📈",
+                            VEGIBOT.Models.HistoryActivityType.ReminderEnabled => "🔔",
+                            VEGIBOT.Models.HistoryActivityType.ReminderDisabled => "🔕",
+                            _ => "ℹ️"
+                        }
+                    </div>
+                    <div class="history-body" style="flex: 1;">
+                        <div class="history-plant" style="font-weight: bold; font-size: 13px; margin-bottom: var(--spacing-xs);">@plantName</div>
+                        <div class="history-desc" style="font-size: 13px; color: #6A8A70; margin-bottom: var(--spacing-xs);">@entry.Description</div>
+                        <div class="history-time" style="font-size: 11px; color: #8890A5;">@timestamp</div>
+                    </div>
+                </div>
+            }
+
+        </section>
+    }
+
+</div>
+
+<script>
+    document.querySelectorAll('.filter-pill').forEach(pill => {
+        pill.addEventListener('click', function() {
+            document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+</script>

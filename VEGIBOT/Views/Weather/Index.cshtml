@@ -1,0 +1,64 @@
+@model VEGIBOT.Models.WeatherViewModel
+
+@{
+    ViewData["Title"] = "Weather";
+    ViewData["PageTitle"] = "Weather";
+    ViewData["ActiveNav"] = "Weather";
+    Layout = "_DashboardLayout";
+}
+
+<div class="weather-page" style="background: var(--vg-warm-cream);">
+
+    <section class="weather-config-card" style="background: white; border-radius: 8px; padding: var(--spacing-lg); box-shadow: var(--vg-box-shadow-light); margin-bottom: var(--spacing-xl);">
+
+        <div class="card-header" style="background: var(--vg-forest-green); color: white; padding: var(--spacing-md) var(--spacing-lg); border-radius: 8px 8px 0 0; margin: -var(--spacing-md) -var(--spacing-lg) 0;">
+            <h3 class="card-title" style="font-size: 18px; display: flex; align-items: center; gap: var(--spacing-sm;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></svg>
+                Weather
+            </h3>
+        </div>
+
+        @if (!Model.IsConfigured)
+        {
+            <div class="config-warning" style="padding: var(--spacing-lg); color: var(--vg-dark-text);">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>Weather API not configured</span>
+                <p>@Model.SetupMessage</p>
+                <a asp-controller="Weather" asp-action="Index" class="btn small" style="padding: 6px 12px; font-size: 12px; background: var(--vg-forest-green); color: white; border: none; border-radius: 4px; margin-top: var(--spacing-sm;">Refresh</a>
+            </div>
+        }
+        else
+        {
+            <div class="weather-display" style="padding: var(--spacing-lg);">
+
+                <div class="weather-main" style="text-align: center; margin-bottom: var(--spacing-lg);">
+                    <div class="weather-icon-large" style="width: 80px; height: 80px; margin: 0 auto var(--spacing-lg); background: var(--vg-ivory); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px;">@(Model.Condition ?? "---" switch { "clear" or "sunny" => "☀️", "cloudy" or "overcast" => "☁️", "rain" or "drizzle" => "🌧️", "snow" => "❄️", "mist" or "fog" => "🌫️", "wind" => "💨", "thunder" or "storm" => "⛈️", _ => "🌤️" })</div>
+                    <div class="weather-temp-large" style="font-size: 36px; font-weight: 600; color: var(--vg-dark-text);">@Model.TemperatureCelsius°C</div>
+                </div>
+
+                <div class="weather-condition-large" style="text-align: center; margin-bottom: var(--spacing-lg); font-size: 18px; color: var(--vg-dark-text);">@Model.Condition</div>
+
+                <div class="weather-stats-large" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: var(--spacing-sm); text-align: center; margin-bottom: var(--spacing-lg);">
+                    <div class="weather-stat">
+                        <span class="weather-stat-icon" style="font-size: 18px; margin-bottom: var(--spacing-xs);">💧</span>
+                        <span class="weather-stat-val" style="font-size: 14px; font-weight: 500;">@Model.HumidityPercent%</span>
+                        <span class="weather-stat-label" style="font-size: 10px; color: #6A8A70;">Humidity</span>
+                    </div>
+                    <div class="weather-stat">
+                        <span class="weather-stat-icon" style="font-size: 18px; margin-bottom: var(--spacing-xs);">💨</span>
+                        <span class="weather-stat-val" style="font-size: 14px; font-weight: 500;">@Model.WindKph km/h</span>
+                        <span class="weather-stat-label" style="font-size: 10px; color: #6A8A70;">Wind</span>
+                    </div>
+                </div>
+
+                <div class="weather-gardening-tip" style="background: var(--vg-warm-cream); border-radius: 8px; padding: var(--spacing-md); margin-top: var(--spacing-lg); border-top: 3px solid var(--vg-forest-green);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <span style="font-size: 13px; color: var(--vg-dark-text);">@Model.GardeningTip</span>
+                </div>
+
+            </div>
+        }
+
+    </section>
+
+</div>

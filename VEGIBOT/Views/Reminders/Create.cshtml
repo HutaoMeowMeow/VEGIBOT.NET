@@ -1,0 +1,27 @@
+@model VEGIBOT.Models.ReminderFormViewModel
+
+@{
+    ViewData["Title"] = "Add Reminder";
+    Layout = "_DashboardLayout";
+}
+
+<div class="page-header">
+    <div>
+        <h2>Add a reminder</h2>
+        <p>We'll keep this in your calendar so it doesn't slip.</p>
+    </div>
+    <a class="btn btn-secondary" asp-controller="Reminders" asp-action="Index">Back to reminders</a>
+</div>
+
+<div class="card" style="max-width: 760px;">
+    <div class="card-body">
+        <form asp-controller="Reminders" asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <partial name="_ReminderForm" model="Model" />
+            <div class="form-actions">
+                <a class="btn btn-secondary" asp-controller="Reminders" asp-action="Index">Cancel</a>
+                <button type="submit" class="btn btn-primary">Create Reminder</button>
+            </div>
+        </form>
+    </div>
+</div>

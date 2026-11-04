@@ -1,0 +1,125 @@
+@model VEGIBOT.Models.CalendarViewModel
+
+@{
+    ViewData["Title"] = "Calendar";
+    Layout = "_DashboardLayout";
+
+    var first = new DateTime(Model.Year, Model.Month, 1);
+    var daysInMonth = DateTime.DaysInMonth(Model.Year, Model.Month);
+    var leading = (int)first.DayOfWeek; // Sunday-first grid
+    var prev = first.AddMonths(-1);
+    var next = first.AddMonths(1);
+
+    var eventsByDay = Model.Events
+        .GroupBy(e => e.Date.Date)
+        .ToDictionary(g => g.Key, g => g.OrderBy(e => e.Title).ToList());
+}
+
+<div class="page-header">
+    <div>
+        <h2>@first.ToString("MMMM yyyy")</h2>
+        <p>@Model.Events.Count scheduled item@(Model.Events.Count == 1 ? "" : "s") this month</p>
+    </div>
+    <div style="display:flex;gap:8px;">
+        <a class="btn btn-secondary" asp-controller="Calendar" asp-action="Index" asp-route-year="@prev.Year" asp-route-month="@prev.Month">← Previous</a>
+        <a class="btn btn-secondary" asp-controller="Calendar" asp-action="Index">Today</a>
+        <a class="btn btn-secondary" asp-controller="Calendar" asp-action="Index" asp-route-year="@next.Year" asp-route-month="@next.Month">Next →</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body" style="padding:0;">
+        <div class="calendar-grid">
+            @foreach (var dayName in new[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" })
+            {
+                <div class="calendar-dow">@dayName</div>
+            }
+
+            @for (var i = 0; i < leading; i++)
+            {
+                <div class="calendar-cell is-empty"></div>
+            }
+
+            @for (var day = 1; day <= daysInMonth; day++)
+            {
+                var date = new DateTime(Model.Year, Model.Month, day);
+                var isToday = date == DateTime.Today;
+                var dayEvents = eventsByDay.TryGetValue(date, out var list) ? list : new List<VEGIBOT.Models.CalendarEvent>();
+
+                <div class="calendar-cell @(isToday ? "is-today" : "")">
+                    <div class="calendar-daynum">@day</div>
+                    @foreach (var evt in dayEvents.Take(3))
+                    {
+                        var eventTitle = System.Text.RegularExpressions.Regex.Replace(evt.Title, "(?<!^)([A-Z])", " $1");
+                        <div class="calendar-event @evt.ColorClass" title="@eventTitle @(string.IsNullOrWhiteSpace(evt.PlantName) ? "" : "· " + evt.PlantName)">
+                            @eventTitle
+                        </div>
+                    }
+                    @if (dayEvents.Count > 3)
+                    {
+                        <div class="calendar-more">+@(dayEvents.Count - 3) more</div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--vg-muted);">
+    <span><span class="legend-dot evt-task"></span> Tasks</span>
+    <span><span class="legend-dot evt-reminder"></span> Reminders</span>
+    <span><span class="legend-dot evt-history"></span> Garden activity</span>
+</div>
+
+<style>
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        border-left: 1px solid var(--vg-border-light);
+        border-top: 1px solid var(--vg-border-light);
+    }
+    .calendar-dow {
+        padding: 10px 12px;
+        background: #FAFAF6;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .6px;
+        color: var(--vg-muted);
+        border-right: 1px solid var(--vg-border-light);
+        border-bottom: 1px solid var(--vg-border);
+    }
+    .calendar-cell {
+        min-height: 104px;
+        padding: 8px;
+        border-right: 1px solid var(--vg-border-light);
+        border-bottom: 1px solid var(--vg-border-light);
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+    .calendar-cell.is-empty { background: #FCFCF8; }
+    .calendar-cell.is-today { background: #F3F7EE; box-shadow: inset 0 0 0 2px var(--vg-sage); }
+    .calendar-daynum { font-size: 12px; font-weight: 600; color: var(--vg-muted); margin-bottom: 2px; }
+    .is-today .calendar-daynum { color: var(--vg-forest-green); }
+    .calendar-event {
+        font-size: 11px;
+        line-height: 1.35;
+        padding: 2px 6px;
+        border-radius: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .calendar-more { font-size: 10.5px; color: var(--vg-muted); }
+    .evt-task { background: #EAF1F7; color: #2A5570; }
+    .evt-reminder { background: #FBF3E2; color: #7A5A15; }
+    .evt-history { background: var(--vg-success-light); color: #22543D; }
+    .legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; }
+    @@media (max-width: 760px) {
+        .calendar-cell { min-height: 78px; padding: 5px; }
+        .calendar-event { display: none; }
+        .calendar-more { display: block; }
+    }
+</style>

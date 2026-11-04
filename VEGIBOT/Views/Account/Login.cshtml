@@ -1,0 +1,114 @@
+@model VEGIBOT.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Sign In";
+    Layout = "_LoginLayout";
+    var returnUrl = ViewData["ReturnUrl"] as string ?? string.Empty;
+}
+
+<div class="login-brand">
+    <div class="login-logo" aria-hidden="true">V</div>
+    <h2>VegiBot</h2>
+    <p>Smart Garden</p>
+</div>
+
+<h3>Welcome back</h3>
+<p class="panel-sub">Sign in to tend to your garden.</p>
+
+<form asp-controller="Account" asp-action="Login" asp-route-returnUrl="@returnUrl" method="post" class="login-form" novalidate>
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="ModelOnly" class="alert-error"></div>
+
+    <div class="form-group">
+        <label asp-for="Email" class="form-label">Email address</label>
+        <input asp-for="Email"
+               class="form-input"
+               type="email"
+               autocomplete="email"
+               placeholder="you@example.com"
+               spellcheck="false"
+               autofocus />
+        <span asp-validation-for="Email" class="field-error"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Password" class="form-label">Password</label>
+        <div class="password-wrap">
+            <input asp-for="Password"
+                   id="passwordInput"
+                   class="form-input"
+                   type="password"
+                   autocomplete="current-password"
+                   placeholder="Enter your password" />
+            <button type="button"
+                    id="togglePassword"
+                    class="password-toggle"
+                    aria-label="Show password"
+                    aria-pressed="false"
+                    title="Show password">
+                <svg id="eyeOpen" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
+                <svg id="eyeClosed" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                    <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/>
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
+            </button>
+        </div>
+        <span asp-validation-for="Password" class="field-error"></span>
+    </div>
+
+    <div class="login-row">
+        <label class="checkbox-label" for="RememberMe">
+            <input asp-for="RememberMe" id="RememberMe" class="checkbox-input" type="checkbox" />
+            <span>Remember me</span>
+        </label>
+        <a class="forgot-link" asp-controller="Account" asp-action="ForgotPassword">Forgot password?</a>
+    </div>
+
+    <button type="submit" class="btn btn-primary login-submit">Sign In</button>
+</form>
+
+<div class="login-divider">New to VegiBot?</div>
+
+<p class="login-footer">
+    Create a free account: <a asp-controller="Account" asp-action="Register">Register</a>
+</p>
+
+@section Scripts {
+    <script>
+        (function () {
+            const input = document.getElementById('passwordInput');
+            const toggle = document.getElementById('togglePassword');
+            const eyeOpen = document.getElementById('eyeOpen');
+            const eyeClosed = document.getElementById('eyeClosed');
+            if (!input || !toggle) return;
+
+            toggle.addEventListener('click', function () {
+                const show = input.type === 'password';
+                input.type = show ? 'text' : 'password';
+                toggle.setAttribute('aria-pressed', show ? 'true' : 'false');
+                toggle.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+                toggle.setAttribute('title', show ? 'Hide password' : 'Show password');
+                eyeOpen.style.display = show ? 'none' : '';
+                eyeClosed.style.display = show ? '' : 'none';
+            });
+
+            // Prevent double submits without hiding the label permanently.
+            const form = input.closest('form');
+            if (form) {
+                form.addEventListener('submit', function () {
+                    const btn = form.querySelector('button[type="submit"]');
+                    if (btn && form.checkValidity()) {
+                        btn.disabled = true;
+                        btn.textContent = 'Signing in…';
+                    }
+                });
+            }
+        })();
+    </script>
+}

@@ -1,0 +1,165 @@
+@model VEGIBOT.Models.DashboardViewModel
+@using VEGIBOT.Models
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "_DashboardLayout";
+}
+
+@if (Model.IsDemoData)
+{
+    <div class="demo-banner" role="status">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>Showing <strong>demonstration data</strong> — add your own plants to see real information.</span>
+    </div>
+}
+
+<div class="page-header">
+    <div>
+        <h2>@Model.Greeting, @Model.UserName 👋</h2>
+        <p>Here's what's happening in your garden today.</p>
+    </div>
+    <a class="btn btn-primary" asp-controller="Plants" asp-action="Create">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add New Plant
+    </a>
+</div>
+
+<section class="stats-grid" aria-label="Garden statistics">
+    @for (var i = 0; i < Model.Stats.Count; i++)
+    {
+        var stat = Model.Stats[i];
+        var cls = i switch { 1 => "healthy", 2 => "pending", 3 => "reminders", _ => "total" };
+        <div class="stat-card @cls">
+            <div class="stat-card-body">
+                <div class="stat-icon-wrap">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="@stat.IconSvgPath" />
+                    </svg>
+                </div>
+                <div class="stat-text">
+                    <div class="stat-value">@stat.Value</div>
+                    <div class="stat-label">@stat.Label</div>
+                </div>
+            </div>
+        </div>
+    }
+</section>
+
+<div class="card">
+    <div class="card-header">
+        <h4>Plant overview</h4>
+        <a class="btn-small" asp-controller="Plants" asp-action="Index">View all plants</a>
+    </div>
+    <div class="card-body">
+        @if (Model.Plants.Count == 0)
+        {
+            <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V11"/><path d="M12 13C12 9 9 7 6 7c0 4 3 6 6 6z"/><path d="M12 16c0-4 3-6 6-6 0 4-3 6-6 6z"/></svg>
+                <h3>Your garden is ready</h3>
+                <p class="sub-text">Add your first plant to start tracking growth and care.</p>
+            </div>
+        }
+        else
+        {
+            <div class="plant-grid">
+                @foreach (var plant in Model.Plants.Take(6))
+                {
+                    <a class="plant-tile" asp-controller="Plants" asp-action="Details" asp-route-id="@plant.Id" style="text-decoration:none;color:inherit;">
+                        <div class="plant-tile-head">
+                            <span class="plant-tile-icon" style="background:@(plant.ColorAccent)22;">@plant.IconEmoji</span>
+                            <span class="health-badge @plant.Health.HealthCssClass()">@plant.Health.DisplayName()</span>
+                        </div>
+                        <div class="plant-tile-name">@plant.Name</div>
+                        <div class="plant-tile-meta">@(string.IsNullOrWhiteSpace(plant.Variety) ? "—" : plant.Variety) · @plant.Stage.DisplayName()</div>
+                        <div class="plant-progress-label"><span>Growth</span><span>@plant.GrowthPercent%</span></div>
+                        <div class="plant-progress-track">
+                            <div class="plant-progress-fill" style="width:@(plant.GrowthPercent)%"></div>
+                        </div>
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<div class="row" style="align-items:flex-start;">
+    <div class="col" style="flex: 1 1 380px;">
+        <div class="card">
+            <div class="card-header">
+                <h4>Upcoming tasks</h4>
+                <a class="btn-small" asp-controller="Tasks" asp-action="Index">All tasks</a>
+            </div>
+            <div class="card-body" style="padding:0;">
+                @if (Model.Tasks.Count == 0)
+                {
+                    <p class="text-muted" style="padding:var(--spacing-md);margin:0;font-size:13px;">No tasks scheduled.</p>
+                }
+                else
+                {
+                    <ul style="list-style:none;margin:0;padding:var(--spacing-md);display:flex;flex-direction:column;gap:12px;">
+                        @foreach (var task in Model.Tasks.Take(5))
+                        {
+                            <li style="display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:13px;">
+                                <div>
+                                    <div style="font-weight:500;@(task.IsCompleted ? "text-decoration:line-through;color:var(--vg-muted);" : "")">@task.Title</div>
+                                    <div class="text-muted" style="font-size:12px;">@(string.IsNullOrWhiteSpace(task.PlantName) ? "General" : task.PlantName) · @task.DueDate.ToString("dd MMM")</div>
+                                </div>
+                                <span class="priority-badge @task.Priority.PriorityCssClass()">@task.Priority.DisplayName()</span>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col" style="flex: 1 1 380px;">
+        <div class="card">
+            <div class="card-header">
+                <h4>Recent activity</h4>
+                <a class="btn-small" asp-controller="PlantHistory" asp-action="Index">History</a>
+            </div>
+            <div class="card-body" style="padding:0;">
+                @if (Model.RecentActivity.Count == 0)
+                {
+                    <p class="text-muted" style="padding:var(--spacing-md);margin:0;font-size:13px;">No activity recorded yet.</p>
+                }
+                else
+                {
+                    <ul style="list-style:none;margin:0;padding:var(--spacing-md);display:flex;flex-direction:column;gap:12px;">
+                        @foreach (var item in Model.RecentActivity.Take(5))
+                        {
+                            <li style="display:flex;gap:10px;align-items:flex-start;font-size:13px;">
+                                <span aria-hidden="true">@item.IconEmoji</span>
+                                <div>
+                                    <div>@item.Description</div>
+                                    <div class="text-muted" style="font-size:11.5px;">@(string.IsNullOrWhiteSpace(item.PlantName) ? "" : item.PlantName + " · ")@item.Timestamp.ToString("dd MMM, HH:mm")</div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .plant-tile {
+        display: block;
+        border: 1px solid var(--vg-border-light);
+        border-radius: var(--radius);
+        padding: 14px;
+        transition: box-shadow .2s, transform .2s, border-color .2s;
+    }
+    .plant-tile:hover {
+        box-shadow: var(--vg-box-shadow-medium);
+        transform: translateY(-2px);
+        border-color: var(--vg-sage);
+    }
+    .plant-tile-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px; }
+    .plant-tile-icon { width: 38px; height: 38px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; font-size: 20px; background: var(--vg-ivory); }
+    .plant-tile-name { font-weight: 600; font-size: 14px; }
+    .plant-tile-meta { font-size: 12px; color: var(--vg-muted); margin-bottom: 10px; }
+</style>

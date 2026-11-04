@@ -1,0 +1,104 @@
+@model VEGIBOT.Models.PlantFormViewModel
+@using VEGIBOT.Models
+
+<input type="hidden" asp-for="Id" />
+
+<div asp-validation-summary="ModelOnly" class="alert-error"></div>
+
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="Name" class="form-label">Plant name</label>
+            <input asp-for="Name" class="form-input" placeholder="e.g. Cherry Tomato" />
+            <span asp-validation-for="Name" class="field-error"></span>
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="VegetableType" class="form-label">Vegetable type</label>
+            <input asp-for="VegetableType" class="form-input" placeholder="e.g. Tomato" />
+            <span asp-validation-for="VegetableType" class="field-error"></span>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="Variety" class="form-label">Variety</label>
+            <input asp-for="Variety" class="form-input" placeholder="e.g. Gardener's Delight" />
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="IconEmoji" class="form-label">Icon</label>
+            <input asp-for="IconEmoji" class="form-input" maxlength="10" placeholder="🌱" />
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="PlantedDate" class="form-label">Planting date</label>
+            <input asp-for="PlantedDate" class="form-input" type="date" />
+            <span asp-validation-for="PlantedDate" class="field-error"></span>
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="ExpectedHarvestDate" class="form-label">Expected harvest</label>
+            <input asp-for="ExpectedHarvestDate" class="form-input" type="date" />
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="Stage" class="form-label">Growth stage</label>
+            <select asp-for="Stage" class="form-input" asp-items="Html.GetEnumSelectList<GrowthStage>()"></select>
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="Health" class="form-label">Health status</label>
+            <select asp-for="Health" class="form-input" asp-items="Html.GetEnumSelectList<HealthStatus>()"></select>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="WateringFrequency" class="form-label">Watering frequency</label>
+            <input asp-for="WateringFrequency" class="form-input" placeholder="e.g. Every 2 days" />
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="SunlightRequirements" class="form-label">Sunlight</label>
+            <input asp-for="SunlightRequirements" class="form-input" placeholder="e.g. Full sun" />
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="SoilType" class="form-label">Soil type</label>
+            <input asp-for="SoilType" class="form-input" placeholder="e.g. Loam" />
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-group">
+            <label asp-for="ColorAccent" class="form-label">Colour accent</label>
+            <input asp-for="ColorAccent" class="form-input" placeholder="#3F7651" />
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <label asp-for="Notes" class="form-label">Notes</label>
+    <textarea asp-for="Notes" class="form-input" rows="4" placeholder="Anything worth remembering about this plant…"></textarea>
+</div>

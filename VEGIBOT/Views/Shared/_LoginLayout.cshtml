@@ -1,0 +1,70 @@
+@{
+    var pageTitle = ViewData["Title"] as string ?? "Sign In";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@pageTitle — VegiBot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="login-body">
+
+    <div class="login-container">
+
+        <!-- Left: brand story -->
+        <section class="login-left">
+            <div class="login-illustration">
+                <svg viewBox="0 0 200 200" fill="none" aria-hidden="true">
+                    <circle cx="100" cy="100" r="88" fill="rgba(255,255,255,0.06)" />
+                    <path d="M100 34c-30 0-52 22-52 52 0 30 22 52 52 52 30 0 52-22 52-52 0-30-22-52-52-52z" fill="#2C5B40" />
+                    <path d="M100 150v28" stroke="#C4D6B0" stroke-width="3" stroke-linecap="round" />
+                    <path d="M100 178c-10 0-18-8-18-18" stroke="#C4D6B0" stroke-width="3" stroke-linecap="round" />
+                    <path d="M100 70c-16 12-26 26-26 40 0 14 12 24 26 24s26-10 26-24c0-14-10-28-26-40z" fill="#A8BFA3" />
+                    <path d="M100 86c-9 8-14 16-14 24 0 8 6 14 14 14s14-6 14-14c0-8-5-16-14-24z" fill="#DCE7D8" />
+                    <path d="M100 112v22" stroke="#183D2B" stroke-width="2.4" stroke-linecap="round" />
+                    <path d="M100 118l11-8M100 126l-11-7" stroke="#183D2B" stroke-width="2.2" stroke-linecap="round" />
+                </svg>
+
+                <div class="login-tagline">Smart Garden Management</div>
+
+                <h2 class="login-headline">Grow smarter.<br><span>Care better.</span></h2>
+                <p class="login-subline">
+                    Track every plant, stay ahead of watering and feeding, and get gentle guidance
+                    from one calm, organised garden workspace.
+                </p>
+
+                <ul class="login-features">
+                    <li>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Plant health and growth at a glance
+                    </li>
+                    <li>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Tasks and reminders that never slip
+                    </li>
+                    <li>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                        Weather-aware gardening decisions
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Right: form panel -->
+        <section class="login-right">
+            <div class="login-panel">
+                @RenderBody()
+                <p class="login-brand-footer">VegiBot &copy; @DateTime.Now.Year · Cultivated with care</p>
+            </div>
+        </section>
+
+    </div>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

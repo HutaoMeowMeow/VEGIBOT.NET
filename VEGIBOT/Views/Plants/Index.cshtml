@@ -1,0 +1,114 @@
+@model VEGIBOT.Models.PlantFilterViewModel
+@using VEGIBOT.Models
+
+@{
+    ViewData["Title"] = "My Plants";
+    Layout = "_DashboardLayout";
+}
+
+<div class="page-header">
+    <div>
+        <h2>Your garden</h2>
+        <p>@Model.Plants.Count plant@(Model.Plants.Count == 1 ? "" : "s") @(string.IsNullOrWhiteSpace(Model.Search) ? "in your collection" : "matching your search")</p>
+    </div>
+    <a class="btn btn-primary" asp-controller="Plants" asp-action="Create">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Plant
+    </a>
+</div>
+
+<form method="get" asp-controller="Plants" asp-action="Index" class="card" style="padding: var(--spacing-md); margin-bottom: var(--spacing-lg);">
+    <div class="toolbar" style="margin-bottom: 0;">
+        <div class="search-box">
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" name="search" value="@Model.Search" placeholder="Search by name or variety…" aria-label="Search plants" />
+        </div>
+
+        <select name="health" class="form-input" style="width: auto; min-width: 160px;" aria-label="Filter by health">
+            <option value="">All health</option>
+            @foreach (HealthStatus h in Enum.GetValues(typeof(HealthStatus)))
+            {
+                <option value="@h" selected="@(Model.Health == h)">@h.DisplayName()</option>
+            }
+        </select>
+
+        <select name="stage" class="form-input" style="width: auto; min-width: 160px;" aria-label="Filter by stage">
+            <option value="">All stages</option>
+            @foreach (GrowthStage s in Enum.GetValues(typeof(GrowthStage)))
+            {
+                <option value="@s" selected="@(Model.Stage == s)">@s.DisplayName()</option>
+            }
+        </select>
+
+        <select name="sortBy" class="form-input" style="width: auto; min-width: 150px;" aria-label="Sort plants">
+            <option value="name" selected="@(Model.SortBy == "name")">Name (A–Z)</option>
+            <option value="date" selected="@(Model.SortBy == "date")">Newest first</option>
+            <option value="health" selected="@(Model.SortBy == "health")">Health</option>
+            <option value="stage" selected="@(Model.SortBy == "stage")">Growth stage</option>
+        </select>
+
+        <button type="submit" class="btn btn-secondary">Apply</button>
+        <a class="btn btn-link" asp-controller="Plants" asp-action="Index">Reset</a>
+    </div>
+</form>
+
+<div class="card">
+    @if (Model.Plants.Count == 0)
+    {
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21V11"/><path d="M12 13C12 9 9 7 6 7c0 4 3 6 6 6z"/><path d="M12 16c0-4 3-6 6-6 0 4-3 6-6 6z"/></svg>
+            <h3>No plants found</h3>
+            <p class="sub-text">@(string.IsNullOrWhiteSpace(Model.Search) || Model.Health != null || Model.Stage != null ? "Try clearing your filters." : "Add your first plant to start tracking its growth.")</p>
+            <div style="margin-top: var(--spacing-md);">
+                <a class="btn btn-primary" asp-controller="Plants" asp-action="Create">Add a plant</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Plant</th>
+                        <th>Variety</th>
+                        <th>Health</th>
+                        <th>Stage</th>
+                        <th>Planted</th>
+                        <th style="text-align:right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var plant in Model.Plants)
+                    {
+                        <tr>
+                            <td>
+                                <div style="display:flex;align-items:center;gap:10px;">
+                                    <span style="font-size:20px;" aria-hidden="true">@(string.IsNullOrWhiteSpace(plant.IconEmoji) ? "🌱" : plant.IconEmoji)</span>
+                                    <div>
+                                        <a asp-controller="Plants" asp-action="Details" asp-route-id="@plant.Id" style="font-weight:600;color:var(--vg-dark-text);text-decoration:none;">@plant.Name</a>
+                                        <div style="font-size:12px;color:var(--vg-muted);">@plant.VegetableType</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@(string.IsNullOrWhiteSpace(plant.Variety) ? "—" : plant.Variety)</td>
+                            <td><span class="health-badge @plant.Health.HealthCssClass()">@plant.Health.DisplayName()</span></td>
+                            <td>@plant.Stage.DisplayName()</td>
+                            <td>@plant.PlantedDate.ToString("dd MMM yyyy")</td>
+                            <td>
+                                <div class="actions-cell" style="justify-content:flex-end;">
+                                    <a class="btn-small" asp-controller="Plants" asp-action="Details" asp-route-id="@plant.Id">View</a>
+                                    <a class="btn-small" asp-controller="Plants" asp-action="Edit" asp-route-id="@plant.Id">Edit</a>
+                                    <form asp-controller="Plants" asp-action="Delete" asp-route-id="@plant.Id" method="post" onsubmit="return confirm('Remove @plant.Name from your garden?');" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn-small btn-small-delete">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
