@@ -1,0 +1,843 @@
+/* ============================================================
+   VegiBot — Login Page  ·  Visual Polish Pass
+   Forest Green #183D2B · Deep #234B35 · Natural #3F7651
+   Sage #A8BFA3 · Light Sage #DCE7D8 · Cream #F5F3E9
+   Dark Text #202D24
+   ============================================================ */
+
+/* ─── Reset ──────────────────────────────────────────────────── */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ─── Tokens ─────────────────────────────────────────────────── */
+:root {
+    --c-forest:       #183D2B;
+    --c-deep:         #234B35;
+    --c-natural:      #3F7651;
+    --c-sage:         #A8BFA3;
+    --c-light-sage:   #DCE7D8;
+    --c-cream:        #F5F3E9;
+    --c-text:         #202D24;
+    --c-muted:        #5A7160;
+    --c-border:       #C8D9C3;
+    --c-border-hover: #9EC49A;
+    --c-focus:        #3F7651;
+    --c-error:        #B83232;
+    --c-error-bg:     #FDF1F1;
+    --c-error-border: #E5BABA;
+
+    --r-sm:   6px;
+    --r-md:   11px;
+    --r-lg:   16px;
+
+    --sh-input: 0 1px 3px rgba(24,61,43,0.06), 0 1px 2px rgba(24,61,43,0.04);
+    --sh-btn:   0 4px 14px rgba(24,61,43,0.28), 0 1px 4px rgba(24,61,43,0.16);
+    --sh-focus: 0 0 0 3px rgba(63,118,81,0.18);
+
+    --font: 'Inter', 'DM Sans', system-ui, -apple-system, sans-serif;
+}
+
+/* ─── Base ───────────────────────────────────────────────────── */
+html {
+    height: 100%;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+body.login-body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font);
+    background: var(--c-cream);
+    color: var(--c-text);
+    line-height: 1.5;
+}
+
+/* ─── Page shell ─────────────────────────────────────────────── */
+.login-page {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* ============================================================
+   LEFT PANEL — Botanical Illustration
+   ============================================================ */
+.login-visual {
+    position: relative;
+    flex: 0 0 46%;
+    max-width: 46%;
+    background: var(--c-forest);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+/* Multi-stop gradient: clear top → dark bottom so tagline is always readable */
+.visual-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(24,61,43,0.00) 0%,
+            rgba(24,61,43,0.15) 40%,
+            rgba(24,61,43,0.60) 68%,
+            rgba(24,61,43,0.90) 100%
+        );
+    z-index: 1;
+    pointer-events: none;
+}
+
+.botanical-art {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.botanical-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* Brand block — sits above the gradient */
+.visual-brand {
+    position: relative;
+    z-index: 2;
+    padding: 44px 48px 52px;
+}
+
+/* Logo row */
+.visual-logo {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-bottom: 32px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+.visual-logo-icon {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255,255,255,0.18);
+}
+
+.visual-logo-wordmark {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.visual-logo-name {
+    font-size: 19px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.2px;
+    line-height: 1.1;
+}
+
+.visual-logo-tag {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--c-sage);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    opacity: 0.85;
+    line-height: 1.3;
+}
+
+.visual-headline {
+    color: #fff;
+    font-size: clamp(24px, 2.8vw, 38px);
+    font-weight: 700;
+    line-height: 1.18;
+    letter-spacing: -0.8px;
+    margin-bottom: 12px;
+}
+
+.visual-sub {
+    color: var(--c-sage);
+    font-size: 14.5px;
+    line-height: 1.7;
+    font-weight: 400;
+    opacity: 0.88;
+}
+
+/* ============================================================
+   RIGHT PANEL — Login Form
+   ============================================================ */
+.login-panel {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--c-cream);
+    padding: 48px 48px;
+    min-height: 100vh;
+    /* Subtle top accent stripe */
+    border-top: 3px solid var(--c-natural);
+}
+
+.login-form-wrap {
+    width: 100%;
+    max-width: 460px;   /* wider than before — better desktop proportion */
+}
+
+/* ─── Mobile brand (hidden on desktop) ──────────────────────── */
+.mobile-brand {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+}
+
+.mobile-brand .brand-name {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--c-forest);
+    letter-spacing: -0.2px;
+}
+
+/* ─── Form header ────────────────────────────────────────────── */
+.form-header {
+    margin-bottom: 36px;
+}
+
+/* Small green leaf accent pip above the heading */
+.form-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 12px;
+}
+
+.form-eyebrow-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--c-natural);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.form-eyebrow-text {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--c-natural);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.form-title {
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--c-text);
+    letter-spacing: -0.9px;
+    line-height: 1.12;
+    margin-bottom: 10px;
+}
+
+/* Thin green underline accent on title */
+.form-title::after {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 3px;
+    background: var(--c-natural);
+    border-radius: 2px;
+    margin-top: 10px;
+    opacity: 0.7;
+}
+
+.form-subtitle {
+    font-size: 15px;
+    color: var(--c-muted);
+    font-weight: 400;
+    line-height: 1.55;
+    margin-top: 14px;
+}
+
+/* ─── Validation summary ─────────────────────────────────────── */
+/*
+   ASP.NET adds:
+     .validation-summary-valid   → no errors → display:none
+     .validation-summary-errors  → has errors → display:flex
+*/
+.alert-error {
+    display: none;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 13px 15px;
+    background: var(--c-error-bg);
+    border: 1.5px solid var(--c-error-border);
+    border-left: 3px solid var(--c-error);
+    border-radius: var(--r-md);
+    margin-bottom: 24px;
+    color: var(--c-error);
+    font-size: 13.5px;
+    line-height: 1.5;
+}
+
+.alert-error.validation-summary-errors {
+    display: flex;
+}
+
+.alert-error ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+}
+
+.alert-error ul li {
+    padding: 1.5px 0;
+    font-size: 13.5px;
+    line-height: 1.5;
+}
+
+.alert-error ul li:first-child::before {
+    content: '⚠\00a0';
+    font-size: 12px;
+}
+
+/* ─── Field groups ───────────────────────────────────────────── */
+.field-group {
+    margin-bottom: 22px;
+}
+
+.field-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--c-text);
+    margin-bottom: 7px;
+    letter-spacing: 0.02em;
+}
+
+.field-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 7px;
+}
+
+.field-label-row .field-label {
+    margin-bottom: 0;
+}
+
+.forgot-link {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--c-natural);
+    text-decoration: none;
+    transition: color 0.14s ease;
+    line-height: 1;
+}
+
+.forgot-link:hover {
+    color: var(--c-forest);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+/* ─── Inputs ─────────────────────────────────────────────────── */
+.field-input-wrap {
+    position: relative;
+}
+
+.field-input {
+    display: block;
+    width: 100%;
+    height: 50px;                 /* slightly taller than before */
+    padding: 0 16px;
+    font-family: var(--font);
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--c-text);
+    background: #fff;
+    border: 1.5px solid var(--c-border);
+    border-radius: var(--r-md);
+    box-shadow: var(--sh-input);
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.field-input::placeholder {
+    color: #aabca6;
+    font-size: 14.5px;
+}
+
+.field-input:hover:not(:focus) {
+    border-color: var(--c-border-hover);
+}
+
+.field-input:focus {
+    border-color: var(--c-focus);
+    box-shadow: var(--sh-focus), var(--sh-input);
+    background: #fdfffe;
+}
+
+.field-input.input-error {
+    border-color: var(--c-error);
+    box-shadow: 0 0 0 3px rgba(184,50,50,0.10);
+}
+
+/* Validation messages */
+.field-error {
+    display: block;
+    margin-top: 6px;
+    font-size: 12.5px;
+    color: var(--c-error);
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+.field-error.field-validation-valid {
+    display: none;
+}
+
+/* ─── Password toggle ────────────────────────────────────────── */
+.password-wrap .field-input {
+    padding-right: 52px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 1px;
+    top: 1px;
+    height: calc(50px - 2px);
+    width: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #96b092;
+    border-radius: 0 calc(var(--r-md) - 1px) calc(var(--r-md) - 1px) 0;
+    transition: color 0.14s ease, background 0.14s ease;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.password-toggle:hover {
+    color: var(--c-natural);
+    background: rgba(63,118,81,0.07);
+}
+
+.password-toggle:focus-visible {
+    outline: 2px solid var(--c-natural);
+    outline-offset: -3px;
+    border-radius: var(--r-md);
+}
+
+/* ─── Remember me checkbox ───────────────────────────────────── */
+.remember-row {
+    margin-top: 6px;
+    margin-bottom: 28px;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.checkbox-input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    pointer-events: none;
+}
+
+.checkbox-custom {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--c-border);
+    border-radius: 5px;
+    background: #fff;
+    position: relative;
+    transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: var(--sh-input);
+}
+
+/* Checkmark */
+.checkbox-custom::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    width: 5px;
+    height: 9px;
+    border: 2px solid #fff;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg);
+    opacity: 0;
+    transition: opacity 0.1s ease;
+}
+
+.checkbox-input:checked + .checkbox-custom {
+    background: var(--c-natural);
+    border-color: var(--c-natural);
+    box-shadow: none;
+}
+
+.checkbox-input:checked + .checkbox-custom::after {
+    opacity: 1;
+}
+
+.checkbox-input:focus-visible + .checkbox-custom {
+    outline: 2px solid var(--c-natural);
+    outline-offset: 2px;
+}
+
+.checkbox-text {
+    font-size: 13.5px;
+    color: var(--c-muted);
+    line-height: 1.2;
+}
+
+/* ─── Sign In button ─────────────────────────────────────────── */
+.btn-signin {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    height: 52px;
+    padding: 0 28px;
+    font-family: var(--font);
+    font-size: 15.5px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--c-forest);
+    border: none;
+    border-radius: var(--r-md);
+    cursor: pointer;
+    letter-spacing: 0.015em;
+    transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.10s ease;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle sheen on hover */
+.btn-signin::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.18s ease;
+    pointer-events: none;
+}
+
+.btn-signin:hover:not(:disabled) {
+    background: var(--c-deep);
+    box-shadow: var(--sh-btn);
+}
+
+.btn-signin:hover:not(:disabled)::before {
+    opacity: 1;
+}
+
+.btn-signin:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: 0 2px 6px rgba(24,61,43,0.18);
+}
+
+.btn-signin:focus-visible {
+    outline: 2px solid var(--c-natural);
+    outline-offset: 3px;
+}
+
+.btn-signin:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+/* Arrow icon in button */
+.btn-arrow {
+    transition: transform 0.18s ease;
+    opacity: 0.7;
+}
+
+.btn-signin:hover:not(:disabled) .btn-arrow {
+    transform: translateX(3px);
+    opacity: 1;
+}
+
+/* Spinner */
+.btn-spinner svg {
+    animation: vegi-spin 0.75s linear infinite;
+}
+
+@keyframes vegi-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* ─── Footer ─────────────────────────────────────────────────── */
+.form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-size: 12.5px;
+    color: #96b092;
+    padding-top: 8px;
+}
+
+.form-footer::before,
+.form-footer::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--c-border);
+    opacity: 0.6;
+}
+
+/* ============================================================
+   FORGOT PASSWORD PAGE
+   ============================================================ */
+.login-panel.forgot-panel {
+    border-top: 3px solid var(--c-natural);
+}
+
+.forgot-panel .login-form-wrap {
+    max-width: 460px;
+}
+
+.login-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+}
+
+.login-brand .brand-name {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--c-forest);
+}
+
+.forgot-content {
+    background: #fff;
+    border: 1.5px solid var(--c-border);
+    border-radius: var(--r-lg);
+    padding: 40px;
+    box-shadow: var(--sh-input);
+}
+
+.forgot-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--c-text);
+    margin-bottom: 16px;
+    letter-spacing: -0.3px;
+}
+
+.forgot-message {
+    font-size: 15px;
+    color: var(--c-muted);
+    line-height: 1.75;
+    margin-bottom: 28px;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--c-natural);
+    text-decoration: none;
+    transition: color 0.14s ease;
+}
+
+.btn-back:hover {
+    color: var(--c-forest);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+/* ============================================================
+   RESPONSIVE — Tablet  ≤ 960px
+   ============================================================ */
+@media (max-width: 960px) {
+    .login-visual {
+        flex: 0 0 42%;
+        max-width: 42%;
+    }
+
+    .visual-brand {
+        padding: 36px 38px 44px;
+    }
+
+    .visual-headline {
+        font-size: 25px;
+    }
+
+    .login-panel {
+        padding: 40px 36px;
+    }
+
+    .login-form-wrap {
+        max-width: 420px;
+    }
+}
+
+/* ============================================================
+   RESPONSIVE — Mobile  ≤ 680px
+   ============================================================ */
+@media (max-width: 680px) {
+    .login-page {
+        flex-direction: column;
+    }
+
+    /* Botanical panel becomes a compact top banner */
+    .login-visual {
+        flex: none;
+        max-width: 100%;
+        height: 240px;
+        min-height: 0;
+    }
+
+    .login-panel {
+        border-top: none;
+        border-left: none;
+        /* Restore green stripe as top border after stacking */
+        border-top: 3px solid var(--c-natural);
+    }
+
+    .visual-overlay {
+        background: linear-gradient(
+            180deg,
+            rgba(24,61,43,0.05) 0%,
+            rgba(24,61,43,0.55) 60%,
+            rgba(24,61,43,0.88) 100%
+        );
+    }
+
+    .visual-brand {
+        padding: 18px 22px 26px;
+    }
+
+    .visual-logo {
+        margin-bottom: 14px;
+    }
+
+    .visual-logo-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+    }
+
+    .visual-logo-name {
+        font-size: 16px;
+    }
+
+    .visual-logo-tag {
+        display: none;
+    }
+
+    .visual-headline {
+        font-size: 21px;
+        letter-spacing: -0.5px;
+        margin-bottom: 0;
+    }
+
+    .visual-sub {
+        display: none;
+    }
+
+    /* Form panel below the banner */
+    .login-panel {
+        flex: 1;
+        min-height: auto;
+        padding: 28px 20px 44px;
+        align-items: flex-start;
+    }
+
+    .login-form-wrap {
+        max-width: 100%;
+    }
+
+    /* Show the in-form brand mark */
+    .mobile-brand {
+        display: flex;
+    }
+
+    .form-title {
+        font-size: 28px;
+    }
+
+    .form-subtitle {
+        font-size: 14px;
+    }
+
+    .field-input {
+        height: 48px;
+        font-size: 16px; /* prevents iOS zoom-on-focus */
+    }
+
+    .password-toggle {
+        height: calc(48px - 2px);
+    }
+
+    .btn-signin {
+        height: 50px;
+        font-size: 15px;
+    }
+}
+
+/* ============================================================
+   RESPONSIVE — Small phones  ≤ 400px
+   ============================================================ */
+@media (max-width: 400px) {
+    .login-visual {
+        height: 190px;
+    }
+
+    .visual-headline {
+        font-size: 18px;
+    }
+
+    .login-panel {
+        padding: 22px 16px 36px;
+    }
+
+    .form-title {
+        font-size: 25px;
+    }
+
+    .form-eyebrow {
+        display: none;
+    }
+}

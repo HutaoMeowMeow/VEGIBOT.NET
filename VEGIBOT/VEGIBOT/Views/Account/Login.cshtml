@@ -1,0 +1,307 @@
+@model VEGIBOT.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Sign In";
+    Layout = "_LoginLayout";
+    var returnUrl = ViewData["ReturnUrl"] as string ?? string.Empty;
+}
+
+<div class="login-page">
+
+    <!-- ═══════════════════════════════════════════════════════
+         LEFT PANEL — Botanical Illustration
+    ════════════════════════════════════════════════════════════ -->
+    <div class="login-visual" role="presentation" aria-hidden="true">
+
+        <div class="visual-overlay"></div>
+
+        <div class="botanical-art">
+            <svg class="botanical-svg"
+                 viewBox="0 0 500 700"
+                 xmlns="http://www.w3.org/2000/svg"
+                 preserveAspectRatio="xMidYMid slice">
+
+                <!-- Deep forest ground -->
+                <rect width="500" height="700" fill="#183D2B"/>
+
+                <!-- Ambient depth layers — far background -->
+                <ellipse cx="60"  cy="140" rx="110" ry="42" fill="#1A3D28" transform="rotate(-28 60 140)"/>
+                <ellipse cx="440" cy="100" rx="120" ry="38" fill="#1A3D28" transform="rotate(22 440 100)"/>
+                <ellipse cx="70"  cy="610" rx="130" ry="50" fill="#1A3D28" transform="rotate(-18 70 610)"/>
+                <ellipse cx="450" cy="560" rx="140" ry="44" fill="#1A3D28" transform="rotate(14 450 560)"/>
+                <!-- Soft ambient light -->
+                <circle cx="400" cy="180" r="90"  fill="#234B35" opacity="0.22"/>
+                <circle cx="100" cy="380" r="110" fill="#234B35" opacity="0.18"/>
+                <circle cx="280" cy="80"  r="60"  fill="#2B5840" opacity="0.15"/>
+
+                <!-- Main plant stem -->
+                <line x1="250" y1="700" x2="250" y2="130"
+                      stroke="#2A6040" stroke-width="4.5" stroke-linecap="round"/>
+
+                <!-- Branch curves (naturalistic, not straight) -->
+                <path d="M250 585 Q215 548 162 506" stroke="#2A6040" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+                <path d="M250 525 Q288 482 345 442" stroke="#2A6040" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+                <path d="M250 458 Q203 412 146 372" stroke="#2A6040" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+                <path d="M250 398 Q302 354 353 318" stroke="#2A6040" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+                <path d="M250 340 Q207 296 166 264" stroke="#2A6040" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+                <path d="M250 293 Q292 258 330 234" stroke="#2A6040" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+                <path d="M250 242 Q230 215 212 194" stroke="#2A6040" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+
+                <!-- ── LEAVES — Left branches ── -->
+                <!-- L1: large lower-left -->
+                <ellipse cx="155" cy="500" rx="75" ry="25" fill="#326845" transform="rotate(-40 155 500)"/>
+                <ellipse cx="155" cy="500" rx="70" ry="21" fill="#3E7A52" transform="rotate(-40 155 500)" opacity="0.5"/>
+                <line x1="196" y1="476" x2="114" y2="524" stroke="#235438" stroke-width="1.3" opacity="0.55"/>
+                <line x1="183" y1="488" x2="127" y2="495" stroke="#235438" stroke-width="0.9" opacity="0.4"/>
+                <line x1="172" y1="501" x2="128" y2="502" stroke="#235438" stroke-width="0.9" opacity="0.35"/>
+
+                <!-- L2: mid-left -->
+                <ellipse cx="140" cy="365" rx="66" ry="23" fill="#326845" transform="rotate(-43 140 365)"/>
+                <ellipse cx="140" cy="365" rx="62" ry="19" fill="#3E7A52" transform="rotate(-43 140 365)" opacity="0.45"/>
+                <line x1="176" y1="342" x2="104" y2="388" stroke="#235438" stroke-width="1.2" opacity="0.5"/>
+                <line x1="163" y1="354" x2="118" y2="360" stroke="#235438" stroke-width="0.8" opacity="0.35"/>
+
+                <!-- L3: upper-left -->
+                <ellipse cx="162" cy="258" rx="56" ry="20" fill="#326845" transform="rotate(-38 162 258)"/>
+                <ellipse cx="162" cy="258" rx="52" ry="17" fill="#3E7A52" transform="rotate(-38 162 258)" opacity="0.4"/>
+                <line x1="194" y1="238" x2="130" y2="278" stroke="#235438" stroke-width="1.0" opacity="0.45"/>
+
+                <!-- ── LEAVES — Right branches ── -->
+                <!-- R1: large lower-right -->
+                <ellipse cx="348" cy="435" rx="76" ry="26" fill="#326845" transform="rotate(37 348 435)"/>
+                <ellipse cx="348" cy="435" rx="72" ry="22" fill="#3E7A52" transform="rotate(37 348 435)" opacity="0.5"/>
+                <line x1="308" y1="412" x2="388" y2="458" stroke="#235438" stroke-width="1.3" opacity="0.52"/>
+                <line x1="320" y1="425" x2="376" y2="430" stroke="#235438" stroke-width="0.9" opacity="0.38"/>
+
+                <!-- R2: mid-right -->
+                <ellipse cx="354" cy="312" rx="68" ry="23" fill="#326845" transform="rotate(39 354 312)"/>
+                <ellipse cx="354" cy="312" rx="64" ry="19" fill="#3E7A52" transform="rotate(39 354 312)" opacity="0.45"/>
+                <line x1="316" y1="291" x2="392" y2="333" stroke="#235438" stroke-width="1.2" opacity="0.48"/>
+
+                <!-- R3: upper-right -->
+                <ellipse cx="330" cy="228" rx="58" ry="19" fill="#326845" transform="rotate(34 330 228)"/>
+                <ellipse cx="330" cy="228" rx="54" ry="16" fill="#3E7A52" transform="rotate(34 330 228)" opacity="0.4"/>
+
+                <!-- ── TOMATOES ── -->
+                <!-- Main cluster L -->
+                <circle cx="162" cy="492" r="14" fill="#8B2020"/>
+                <circle cx="162" cy="492" r="12" fill="#C0392B"/>
+                <circle cx="162" cy="492" r="7.5" fill="#E04545" opacity="0.45"/>
+                <path d="M159 481 Q162 476 165 481" stroke="#3A7050" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                <!-- sepals -->
+                <path d="M162 480 Q158 476 157 472" stroke="#3A7050" stroke-width="1.0" fill="none" stroke-linecap="round" opacity="0.8"/>
+                <path d="M162 480 Q166 476 167 472" stroke="#3A7050" stroke-width="1.0" fill="none" stroke-linecap="round" opacity="0.8"/>
+
+                <!-- Main cluster R -->
+                <circle cx="350" cy="427" r="15" fill="#8B2020"/>
+                <circle cx="350" cy="427" r="13" fill="#C0392B"/>
+                <circle cx="350" cy="427" r="8"  fill="#E04545" opacity="0.45"/>
+                <path d="M347 415 Q350 410 353 415" stroke="#3A7050" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                <path d="M350 414 Q346 410 345 406" stroke="#3A7050" stroke-width="1.0" fill="none" stroke-linecap="round" opacity="0.8"/>
+                <path d="M350 414 Q354 410 355 406" stroke="#3A7050" stroke-width="1.0" fill="none" stroke-linecap="round" opacity="0.8"/>
+
+                <!-- Secondary tomatoes -->
+                <circle cx="147" cy="357" r="9.5" fill="#C0392B"/>
+                <circle cx="147" cy="357" r="6"   fill="#E04545" opacity="0.45"/>
+                <path d="M144 349 Q147 346 150 349" stroke="#3A7050" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+
+                <circle cx="357" cy="307" r="10"  fill="#C0392B"/>
+                <circle cx="357" cy="307" r="6.5" fill="#E04545" opacity="0.45"/>
+                <path d="M354 299 Q357 296 360 299" stroke="#3A7050" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+
+                <!-- ── BELL PEPPER ── -->
+                <ellipse cx="168" cy="252" rx="8.5" ry="11" fill="#C26A08"/>
+                <ellipse cx="168" cy="252" rx="6.5" ry="8.5" fill="#F09D1A" opacity="0.75"/>
+                <line x1="168" y1="242" x2="168" y2="238" stroke="#3A7050" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M165 242 Q168 239 171 242" stroke="#3A7050" stroke-width="0.9" fill="none" opacity="0.7"/>
+
+                <ellipse cx="334" cy="222" rx="8"   ry="10.5" fill="#A85206"/>
+                <ellipse cx="334" cy="222" rx="6"   ry="8"    fill="#E07A1C" opacity="0.75"/>
+                <line x1="334" y1="212" x2="334" y2="208" stroke="#3A7050" stroke-width="1.5" stroke-linecap="round"/>
+
+                <!-- ── TOP LEAVES — sage/cream tones ── -->
+                <ellipse cx="250" cy="182" rx="34"  ry="12" fill="#8EAE8A" transform="rotate(-9 250 182)"  opacity="0.88"/>
+                <ellipse cx="265" cy="169" rx="27"  ry="9.5" fill="#C4DAC0" transform="rotate(7 265 169)"  opacity="0.62"/>
+                <ellipse cx="237" cy="156" rx="21"  ry="7.5" fill="#8EAE8A" transform="rotate(-15 237 156)" opacity="0.68"/>
+                <!-- Tiny tip leaf -->
+                <ellipse cx="252" cy="143" rx="14"  ry="5.5" fill="#C4DAC0" transform="rotate(-5 252 143)"  opacity="0.55"/>
+
+                <!-- ── BERRY ACCENTS ── -->
+                <circle cx="212" cy="298" r="5.5" fill="#2ECC71" opacity="0.7"/>
+                <circle cx="288" cy="344" r="5"   fill="#27AE60" opacity="0.58"/>
+                <circle cx="186" cy="432" r="4.5" fill="#2ECC71" opacity="0.52"/>
+                <circle cx="314" cy="472" r="4.5" fill="#27AE60" opacity="0.48"/>
+                <!-- Tiny scatter -->
+                <circle cx="240" cy="390" r="3"   fill="#A8BFA3" opacity="0.4"/>
+                <circle cx="260" cy="460" r="2.5" fill="#DCE7D8" opacity="0.35"/>
+
+                <!-- Ground shadow -->
+                <ellipse cx="250" cy="695" rx="245" ry="42" fill="#0F2218" opacity="0.65"/>
+
+            </svg>
+        </div>
+
+        <!-- ── Brand block at bottom of left panel ── -->
+        <div class="visual-brand">
+            <div class="visual-logo">
+                <div class="visual-logo-icon">
+                    <!-- Refined droplet / leaf icon -->
+                    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11 2 C8 6 5 9.5 5 13 C5 16.9 7.7 20 11 20 C14.3 20 17 16.9 17 13 C17 9.5 14 6 11 2Z"
+                              fill="#A8BFA3" opacity="0.9"/>
+                        <path d="M11 6.5 C11 6.5 14.5 10 14.5 13 C14.5 14.9 12.9 16.5 11 16.5 C9.1 16.5 7.5 14.9 7.5 13 C7.5 10 11 6.5 11 6.5Z"
+                              fill="#F5F3E9" opacity="0.85"/>
+                        <!-- stem line through the middle -->
+                        <line x1="11" y1="13" x2="11" y2="19.5" stroke="#5A9E70" stroke-width="1.4" stroke-linecap="round"/>
+                        <line x1="11" y1="11.5" x2="13.5" y2="9"   stroke="#5A9E70" stroke-width="1.2" stroke-linecap="round"/>
+                        <line x1="11" y1="14"   x2="8.5"  y2="11.5" stroke="#5A9E70" stroke-width="1.2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="visual-logo-wordmark">
+                    <span class="visual-logo-name">VegiBot</span>
+                    <span class="visual-logo-tag">Smart Garden</span>
+                </div>
+            </div>
+            <h2 class="visual-headline">Grow Smarter.<br>Care Better.</h2>
+            <p class="visual-sub">Your smart vegetable growth<br>and care companion.</p>
+        </div>
+
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         RIGHT PANEL — Login Form
+    ════════════════════════════════════════════════════════════ -->
+    <div class="login-panel">
+        <div class="login-form-wrap">
+
+            <!-- Mobile-only brand strip (hidden on desktop via CSS) -->
+            <div class="mobile-brand">
+                <svg width="28" height="28" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <rect width="22" height="22" rx="6" fill="#183D2B"/>
+                    <path d="M11 2 C8 6 5 9.5 5 13 C5 16.9 7.7 20 11 20 C14.3 20 17 16.9 17 13 C17 9.5 14 6 11 2Z"
+                          fill="#A8BFA3" opacity="0.9"/>
+                    <path d="M11 6.5 C11 6.5 14.5 10 14.5 13 C14.5 14.9 12.9 16.5 11 16.5 C9.1 16.5 7.5 14.9 7.5 13 C7.5 10 11 6.5 11 6.5Z"
+                          fill="#F5F3E9" opacity="0.9"/>
+                    <line x1="11" y1="13" x2="11" y2="19.5" stroke="#5A9E70" stroke-width="1.4" stroke-linecap="round"/>
+                </svg>
+                <span class="brand-name">VegiBot</span>
+            </div>
+
+            <!-- Form header -->
+            <div class="form-header">
+                <div class="form-eyebrow">
+                    <span class="form-eyebrow-dot"></span>
+                    <span class="form-eyebrow-text">Member access</span>
+                </div>
+                <h1 class="form-title">Welcome back</h1>
+                <p class="form-subtitle">Sign in to continue to your garden dashboard</p>
+            </div>
+
+            <!-- ── Form ── -->
+            <form id="loginForm"
+                  asp-action="Login"
+                  asp-controller="Account"
+                  asp-route-returnUrl="@returnUrl"
+                  method="post"
+                  novalidate>
+
+                @Html.AntiForgeryToken()
+
+                <!--
+                    ASP.NET adds .validation-summary-valid (no errors → CSS hides)
+                                 .validation-summary-errors (errors → CSS shows)
+                -->
+                <div asp-validation-summary="All" class="alert-error" role="alert"></div>
+
+                <!-- Email -->
+                <div class="field-group">
+                    <label asp-for="Email" class="field-label">Email address</label>
+                    <div class="field-input-wrap">
+                        <input asp-for="Email"
+                               class="field-input"
+                               type="email"
+                               autocomplete="email"
+                               placeholder="you@example.com"
+                               spellcheck="false"
+                               autofocus />
+                    </div>
+                    <span asp-validation-for="Email" class="field-error"></span>
+                </div>
+
+                <!-- Password -->
+                <div class="field-group">
+                    <div class="field-label-row">
+                        <label asp-for="Password" class="field-label">Password</label>
+                        <a asp-action="ForgotPassword"
+                           asp-controller="Account"
+                           class="forgot-link"
+                           tabindex="-1">Forgot password?</a>
+                    </div>
+                    <div class="field-input-wrap password-wrap">
+                        <input asp-for="Password"
+                               id="passwordInput"
+                               class="field-input"
+                               type="password"
+                               autocomplete="current-password"
+                               placeholder="Enter your password" />
+                        <button type="button"
+                                id="togglePassword"
+                                class="password-toggle"
+                                aria-label="Show password"
+                                title="Show password">
+                            <svg id="eyeIcon" width="17" height="17" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                 stroke-linejoin="round" aria-hidden="true">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            <svg id="eyeOffIcon" width="17" height="17" viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                 stroke-linejoin="round" aria-hidden="true" style="display:none">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                                <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/>
+                                <line x1="1" y1="1" x2="23" y2="23"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <span asp-validation-for="Password" class="field-error"></span>
+                </div>
+
+                <!-- Remember Me -->
+                <div class="remember-row">
+                    <label class="checkbox-label">
+                        <input asp-for="RememberMe" type="checkbox" class="checkbox-input" />
+                        <span class="checkbox-custom" aria-hidden="true"></span>
+                        <span class="checkbox-text">Remember me for 14 days</span>
+                    </label>
+                </div>
+
+                <!-- Sign In button — arrow added for visual weight -->
+                <button type="submit" id="submitBtn" class="btn-signin">
+                    <span class="btn-text">Sign In</span>
+                    <span class="btn-arrow" aria-hidden="true">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                             stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                            <polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                    </span>
+                    <span class="btn-spinner" aria-hidden="true" style="display:none">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83
+                                     M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                        </svg>
+                    </span>
+                </button>
+
+            </form>
+
+            <p class="form-footer">VegiBot &copy; @DateTime.Now.Year</p>
+
+        </div>
+    </div>
+
+</div>
