@@ -146,7 +146,7 @@ namespace VEGIBOT.Controllers
                 {
                     Id = p.Id,
                     Name = p.Name,
-                    Variety = p.Variety,
+                    Variety = p.Variety ?? string.Empty,
                     IconEmoji = p.IconEmoji,
                     ColorAccent = p.ColorAccent,
                     PlantedDate = p.PlantedDate,

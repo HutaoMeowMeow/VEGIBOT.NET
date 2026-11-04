@@ -28,7 +28,7 @@
             <label asp-for="PlantId" class="form-label">Plant</label>
             <select asp-for="PlantId" class="form-input">
                 <option value="">-- Select a plant --</option>
-                @foreach (var plant in (List<VEGIBOT.Models.Plant>)ViewData["Plants"])
+                @foreach (var plant in (ViewData["Plants"] as List<VEGIBOT.Models.Plant> ?? new List<VEGIBOT.Models.Plant>()))
                 {
                     <option value="@plant.Id">@plant.Name</option>
                 }
