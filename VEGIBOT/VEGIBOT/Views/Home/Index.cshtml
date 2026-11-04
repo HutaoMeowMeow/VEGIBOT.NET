@@ -78,11 +78,9 @@
             <div class="plant-grid">
                 @foreach (var plant in Model.Plants)
                 {
-                    @{
-                        var healthLabel = plant.Health.DisplayName();
-                        var healthCss   = plant.Health.HealthCssClass();
-                        var stageLabel  = plant.Stage.DisplayName();
-                    }
+                    var healthLabel = plant.Health.DisplayName();
+                    var healthCss   = plant.Health.HealthCssClass();
+                    var stageLabel  = plant.Stage.DisplayName();
                     <div class="plant-card" style="--plant-color: @plant.ColorAccent">
                         <div class="plant-card-top">
                             <div class="plant-emoji" aria-hidden="true">@plant.IconEmoji</div>
